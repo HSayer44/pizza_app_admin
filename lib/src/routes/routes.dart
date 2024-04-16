@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pizza_app_admin/src/blocs/authentication_bloc/authentication_bloc.dart';
 
+import '../modules/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../modules/auth/views/login_screen.dart';
 import '../modules/base/views/base_screen.dart';
 import '../modules/home/views/home_screen.dart';
@@ -27,7 +28,10 @@ GoRouter router(AuthenticationBloc authBloc) {
           if (state.fullPath == '/login' || state.fullPath == '/') {
             return child;
           } else {
-            return BaseScreen(child);
+            return BlocProvider<SignInBloc>(
+              create: (context) => SignInBloc(context.read<AuthenticationBloc>().userRepository),
+              child: BaseScreen(child),
+            );
           }
         },
         routes: [
@@ -35,21 +39,24 @@ GoRouter router(AuthenticationBloc authBloc) {
             path: '/',
             builder: (context, state) => BlocProvider<AuthenticationBloc>.value(
               value: BlocProvider.of<AuthenticationBloc>(context),
-              child: SplashScreen(),
+              child: const SplashScreen(),
             ),
           ),
           GoRoute(
             path: '/login',
             builder: (context, state) => BlocProvider<AuthenticationBloc>.value(
               value: BlocProvider.of<AuthenticationBloc>(context),
-              child: LoginScreen(),
+              child: BlocProvider<SignInBloc>(
+                create: (context) => SignInBloc(context.read<AuthenticationBloc>().userRepository),
+                child: const SignInScreen(),
+              ),
             ),
           ),
           GoRoute(
             path: '/home',
             builder: (context, state) => BlocProvider<AuthenticationBloc>.value(
               value: BlocProvider.of<AuthenticationBloc>(context),
-              child: HomeScreen(),
+              child: const HomeScreen(),
             ),
           ),
         ],
