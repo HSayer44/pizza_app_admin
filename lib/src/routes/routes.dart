@@ -6,6 +6,7 @@ import 'package:pizza_app_admin/src/blocs/authentication_bloc/authentication_blo
 import '../modules/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../modules/auth/views/login_screen.dart';
 import '../modules/base/views/base_screen.dart';
+import '../modules/create_pizza/views/create_screen.dart';
 import '../modules/home/views/home_screen.dart';
 import '../modules/splash/views/splash_screen.dart';
 
@@ -58,6 +59,10 @@ GoRouter router(AuthenticationBloc authBloc) {
               value: BlocProvider.of<AuthenticationBloc>(context),
               child: const HomeScreen(),
             ),
+          ),
+          GoRoute(
+            path: '/create',
+            builder: (context, state) => const CreatePizzaScreen(),
           ),
         ],
       ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class CreatePizzaScreen extends StatelessWidget {
+  const CreatePizzaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
-        child: Text('Home Screen'),
+        child: Text('Create Screen'),
       ),
     );
   }
