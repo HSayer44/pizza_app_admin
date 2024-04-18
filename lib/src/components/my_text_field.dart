@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -12,6 +13,9 @@ class MyTextField extends StatelessWidget {
   final String? Function(String?)? onChanged;
   final FocusNode? focusNode;
   final String? errorMsg;
+  final int? minLines;
+  final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   const MyTextField(
       {super.key,
@@ -25,7 +29,10 @@ class MyTextField extends StatelessWidget {
       this.validator,
       this.onChanged,
       this.focusNode,
-      this.errorMsg});
+      this.errorMsg,
+      this.minLines,
+      this.maxLines = 1,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +41,11 @@ class MyTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      minLines: minLines,
+      maxLines: maxLines,
       onTap: onTap,
       textInputAction: TextInputAction.next,
+      inputFormatters: inputFormatters,
       onChanged: onChanged,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
@@ -48,7 +58,7 @@ class MyTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
         ),
-        fillColor: Colors.grey.shade200,
+        fillColor: Colors.white,
         filled: true,
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.grey[500]),
