@@ -1,9 +1,9 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 
 import '../../../components/my_text_field.dart';
@@ -29,6 +29,7 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
   bool creationRequired = false;
 
   final _formKey = GlobalKey<FormState>();
+  // final _macroFormKey = GlobalKey<FormState>();
   String? _errorMsg;
 
   late Pizza pizza;
@@ -55,8 +56,12 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                 ),
                 const SizedBox(height: 20),
                 InkWell(
-                  onTap: () {
-                    
+                  onTap: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image = await picker.pickImage(source: ImageSource.gallery, maxHeight: 1000, maxWidth: 1000);
+                    if(image != null && context.mounted) {
+
+                    }
                   },
                   hoverColor: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(20),
@@ -70,9 +75,12 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(CupertinoIcons.photo,size: 100, color: Colors.grey.shade400),
+                        Icon(CupertinoIcons.photo, size: 100, color: Colors.grey.shade400),
                         const SizedBox(height: 10),
-                        const Text('Add a Picture here...', style: TextStyle(color: Colors.grey),)
+                        const Text(
+                          'Add a Picture here...',
+                          style: TextStyle(color: Colors.grey),
+                        )
                       ],
                     ),
                   ),
@@ -245,81 +253,85 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const Text('Macros:'),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: 400,
-                        child: Row(
-                          children: [
-                            MacroWidget(
-                              title: 'Calories',
-                              value: 12,
-                              icon: FontAwesomeIcons.fire,
-                              controller: calorieController,
-                            ),
-                            const SizedBox(width: 10),
-                            MacroWidget(
-                              title: 'Protein',
-                              value: 12,
-                              icon: FontAwesomeIcons.dumbbell,
-                              controller: proteinController,
-                            ),
-                            const SizedBox(width: 10),
-                            MacroWidget(
-                              title: 'Fat',
-                              value: 12,
-                              icon: FontAwesomeIcons.oilCan,
-                              controller: fatController,
-                            ),
-                            const SizedBox(width: 10),
-                            MacroWidget(
-                              title: 'Carbs',
-                              value: 12,
-                              icon: FontAwesomeIcons.breadSlice,
-                              controller: carbsController,
-                            ),
-                          ],
-                        ),
-                      ),
-            
                     ],
                   ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Macros:'),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 400,
+                      child: Row(
+                        children: [
+                          MacroWidget(
+                            title: 'Calories',
+                            value: 12,
+                            icon: FontAwesomeIcons.fire,
+                            controller: calorieController,
+                          ),
+                          const SizedBox(width: 10),
+                          MacroWidget(
+                            title: 'Protein',
+                            value: 12,
+                            icon: FontAwesomeIcons.dumbbell,
+                            controller: proteinController,
+                          ),
+                          const SizedBox(width: 10),
+                          MacroWidget(
+                            title: 'Fat',
+                            value: 12,
+                            icon: FontAwesomeIcons.oilCan,
+                            controller: fatController,
+                          ),
+                          const SizedBox(width: 10),
+                          MacroWidget(
+                            title: 'Carbs',
+                            value: 12,
+                            icon: FontAwesomeIcons.breadSlice,
+                            controller: carbsController,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 !creationRequired
                     ? SizedBox(
-                  width: 400,
-                  height: 40,
-                  child: TextButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            pizza.name = nameController.text;
-                            pizza.description = descriptionController.text;
-                            pizza.price = int.parse(priceController.text);
-                            pizza.discount = int.parse(discountController.text);
-                            pizza.macros.calories = int.parse(calorieController.text);
-                            pizza.macros.proteins = int.parse(proteinController.text);
-                            pizza.macros.fat = int.parse(fatController.text);
-                            pizza.macros.carbs = int.parse(carbsController.text);
-                          });
-                          print(pizza.toString());
-                        }
-                      },
-                      style: TextButton.styleFrom(
-                          elevation: 3.0,
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60))),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-                        child: Text(
-                          'Create Pizza',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                      )),
-                )
+                        width: 400,
+                        height: 40,
+                        child: TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  pizza.name = nameController.text;
+                                  pizza.description = descriptionController.text;
+                                  pizza.price = int.parse(priceController.text);
+                                  pizza.discount = int.parse(discountController.text);
+                                  pizza.macros.calories = int.parse(calorieController.text);
+                                  pizza.macros.proteins = int.parse(proteinController.text);
+                                  pizza.macros.fat = int.parse(fatController.text);
+                                  pizza.macros.carbs = int.parse(carbsController.text);
+                                });
+                                print(pizza.toString());
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                                elevation: 3.0,
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60))),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                              child: Text(
+                                'Create Pizza',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            )),
+                      )
                     : const CircularProgressIndicator(),
               ],
             ),

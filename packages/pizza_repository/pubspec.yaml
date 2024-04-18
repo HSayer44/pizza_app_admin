@@ -13,7 +13,7 @@ dependencies:
 #  firebase_auth:
   cloud_firestore:
   uuid:
-#  firebase_storage:
+  firebase_storage:
 #  rxdart:
 #  path:
 

@@ -9,20 +9,17 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
           if (state.status == AuthenticationStatus.authenticated) {
             context.go('/create');
-            return Container();
           } else if (state.status == AuthenticationStatus.unauthenticated) {
             context.go('/login');
-            return Container();
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
           }
         },
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
