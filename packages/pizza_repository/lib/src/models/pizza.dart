@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import '../../pizza_repository.dart';
 import 'macros.dart';
 
@@ -25,7 +27,7 @@ class Pizza {
   });
 
   static final empty = Pizza(
-    pizzaId: '',
+    pizzaId: const Uuid().v1(),
     picture: '',
     isVeg: false,
     spicy: 1,
@@ -64,5 +66,24 @@ class Pizza {
       discount: entity.discount,
       macros: entity.macros,
     );
+  }
+
+  //just for debugging purposes
+  @override
+  String toString() {
+    return '''Pizza{pizzaId: $pizzaId,
+    picture: $picture,
+    name: $name,
+    description: $description,
+    price: $price,
+    discount: $discount,
+    isVeg: $isVeg,
+    spicy: $spicy,
+    macros:[
+      macros: ${macros.calories}
+      proteins: ${macros.proteins}
+      fat: ${macros.fat}
+      carbs: ${macros.carbs}
+    ] ''';
   }
 }

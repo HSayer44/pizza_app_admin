@@ -12,6 +12,7 @@ dependencies:
 #  equatable:
 #  firebase_auth:
   cloud_firestore:
+  uuid:
 #  firebase_storage:
 #  rxdart:
 #  path:
