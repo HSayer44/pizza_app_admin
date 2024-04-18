@@ -15,7 +15,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
   bool signInRequired = false;
   IconData iconPassword = CupertinoIcons.eye_slash_fill;
   bool obscurePassword = true;
@@ -53,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey,
+            key: _formKey1,
             child: Column(
               children: [
                 const SizedBox(height: 20),
@@ -116,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: TextButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey1.currentState!.validate()) {
                           context
                               .read<SignInBloc>()
                               .add(SignInRequired(emailController.text, passwordController.text));

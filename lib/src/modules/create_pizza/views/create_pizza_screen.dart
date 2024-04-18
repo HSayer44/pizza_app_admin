@@ -2,12 +2,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:pizza_app_admin/src/modules/create_pizza/blocs/create_pizza/create_pizza_bloc.dart';
+import 'package:pizza_app_admin/src/modules/create_pizza/blocs/upload_picture/upload_picture_bloc.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 
 import '../../../components/my_text_field.dart';
 import '../components/macro.dart';
+import 'dart:html' as html;
 
 class CreatePizzaScreen extends StatefulWidget {
   const CreatePizzaScreen({super.key});
@@ -28,7 +34,7 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
 
   bool creationRequired = false;
 
-  final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   // final _macroFormKey = GlobalKey<FormState>();
   String? _errorMsg;
 
@@ -42,7 +48,32 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<CreatePizzaBloc, CreatePizzaState>(
+  listener: (context, state) {
+    if (state is CreatePizzaSuccess) {
+      setState(() {
+        creationRequired = false;
+        context.go('/home');
+      });
+    } else if (state is CreatePizzaLoading) {
+      setState(() {
+        creationRequired = true;
+      });
+    }
+  },
+  child: BlocListener<UploadPictureBloc, UploadPictureState>(
+  listener: (context, state) {
+    if(state is UploadPictureLoading) {
+    }
+    else if(state is UploadPictureSuccess) {
+      setState(() {
+        pizza.picture = state.url;
+        print(pizza.picture);
+      });
+    }
+    else {}
+  },
+  child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20.0),
@@ -60,12 +91,21 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                     final ImagePicker picker = ImagePicker();
                     final XFile? image = await picker.pickImage(source: ImageSource.gallery, maxHeight: 1000, maxWidth: 1000);
                     if(image != null && context.mounted) {
-
+                      context.read<UploadPictureBloc>().add(UploadPicture(await image.readAsBytes(), basename(image.path)));
                     }
                   },
                   hoverColor: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(20),
-                  child: Ink(
+                  child: pizza.picture.startsWith('http') ?
+                  Container(
+                    width: 400,
+                    height: 400,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: NetworkImage(pizza.picture), fit: BoxFit.cover),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  )
+                      :  Ink(
                     width: 400,
                     height: 400,
                     decoration: BoxDecoration(
@@ -87,7 +127,7 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                 ),
                 const SizedBox(height: 20),
                 Form(
-                  key: _formKey,
+                  key: _formKey2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -304,7 +344,7 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                         height: 40,
                         child: TextButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
+                              if (_formKey2.currentState!.validate()) {
                                 setState(() {
                                   pizza.name = nameController.text;
                                   pizza.description = descriptionController.text;
@@ -316,6 +356,8 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
                                   pizza.macros.carbs = int.parse(carbsController.text);
                                 });
                                 print(pizza.toString());
+                                context.read<CreatePizzaBloc>().add(CreatePizza(pizza));
+                                context.go('/home');
                               }
                             },
                             style: TextButton.styleFrom(
@@ -336,6 +378,8 @@ class _CreatePizzaScreenState extends State<CreatePizzaScreen> {
               ],
             ),
           ),
-        ));
+        )),
+),
+);
   }
 }
